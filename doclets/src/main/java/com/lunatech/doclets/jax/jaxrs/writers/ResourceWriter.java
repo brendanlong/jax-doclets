@@ -64,40 +64,7 @@ public class ResourceWriter extends DocletWriter {
     if (!resource.hasRealMethods())
       return;
     List<ResourceMethod> methods = resource.getMethods();
-    printMethodOverview(methods);
     printMethodDetails(methods);
-  }
-
-  private void printMethodOverview(List<ResourceMethod> methods) {
-    tag("hr");
-    open("table class='info' id='methods-summary'");
-    around("caption class='TableCaption'", "Method Summary");
-    open("tbody");
-    open("tr");
-    around("th class='TableHeader'", "Resource");
-    around("th class='TableHeader'", "Description");
-    close("tr");
-    for (ResourceMethod method : methods) {
-      // skip resource locator methods
-      if (method.isResourceLocator())
-        continue;
-      for (String httpMethod : method.getMethods()) {
-        open("tr");
-        open("td");
-        open("tt");
-        around("a href='#" + httpMethod + "'", httpMethod + " " + Utils.getDisplayURL(this, resource, method));
-        close("tt");
-        close("td");
-        open("td");
-        Doc javaDoc = method.getJavaDoc();
-        if (javaDoc != null && javaDoc.firstSentenceTags() != null)
-          writer.printSummaryComment(javaDoc);
-        close("td");
-        close("tr");
-      }
-    }
-    close("tbody");
-    close("table");
   }
 
   private void printMethodDetails(List<ResourceMethod> methods) {
