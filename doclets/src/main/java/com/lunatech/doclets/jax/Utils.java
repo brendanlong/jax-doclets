@@ -744,7 +744,7 @@ public class Utils {
     Matcher regexMatcher = regexPattern.matcher(fragment);
     int start = 0;
     char[] fragmentArray = fragment.toCharArray();
-    StringBuffer strbuf = new StringBuffer();
+    StringBuilder strbuf = new StringBuilder();
     while (regexMatcher.find(start)) {
       strbuf.append(fragment.substring(start, regexMatcher.start()));
       String name = regexMatcher.group(1);

@@ -62,9 +62,9 @@ public class SummaryWriter extends com.lunatech.doclets.jax.writers.DocletWriter
     around("caption class='TableCaption'", "Resources");
     open("tbody");
     open("tr class='subheader'");
+    around("th class='TableHeader'", "Methods");
     around("th class='TableHeader'", "Resource");
     around("th class='TableHeader'", "Description");
-    around("th class='TableHeader'", "Methods");
     close("tr");
     printResource(resource);
     close("tbody");
@@ -84,19 +84,9 @@ public class SummaryWriter extends com.lunatech.doclets.jax.writers.DocletWriter
 
   private void printResourceLine(Resource resource) {
     open("tr");
-    open("td");
     String path = Utils.urlToPath(resource);
-    if (path.length() == 0)
-      path = ".";
-    open("a href='" + path + "/index.html'");
-    around("tt", Utils.getAbsolutePath(this, resource));
-    close("a");
-    close("td");
-    open("td");
-    Doc javaDoc = resource.getJavaDoc();
-    if (javaDoc != null && javaDoc.firstSentenceTags() != null)
-      writer.printSummaryComment(javaDoc);
-    close("td");
+
+    // Print method(s)
     open("td");
     boolean first = true;
     for (ResourceMethod method : resource.getMethods()) {
@@ -109,6 +99,22 @@ public class SummaryWriter extends com.lunatech.doclets.jax.writers.DocletWriter
         first = false;
       }
     }
+    close("td");
+
+    // Print URL
+    open("td");
+    if (path.length() == 0)
+      path = ".";
+    open("a href='" + path + "/index.html'");
+    around("tt", Utils.getAbsolutePath(this, resource));
+    close("a");
+    close("td");
+
+    // Print description
+    open("td");
+    Doc javaDoc = resource.getJavaDoc();
+    if (javaDoc != null && javaDoc.firstSentenceTags() != null)
+      writer.printSummaryComment(javaDoc);
     close("td");
     close("tr");
   }
