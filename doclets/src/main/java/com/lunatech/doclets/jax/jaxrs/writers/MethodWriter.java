@@ -168,7 +168,7 @@ public class MethodWriter extends DocletWriter {
         else
           around("tt", escape(typeName));
         if (output.getOutputDoc(i) != null) {
-          print(" - ");
+          print(" &mdash; ");
           print(output.getOutputDoc(i));
         }
         close("dd");
@@ -178,7 +178,7 @@ public class MethodWriter extends DocletWriter {
       Type returnType = output.getOutputType();
       printOutputType(returnType);
       if (output.getOutputDoc() != null) {
-        print(" - ");
+        print(" &mdash; ");
         print(output.getOutputDoc());
       }
       close("dd");
@@ -286,7 +286,7 @@ public class MethodWriter extends DocletWriter {
     }
     String doc = inputParameter.getDoc();
     if (!Utils.isEmptyOrNull(doc)) {
-      print(" - ");
+      print(" &mdash; ");
       print(doc);
     }
     close("dd");
@@ -303,7 +303,7 @@ public class MethodWriter extends DocletWriter {
       around("b", param.getName());
       String doc = param.getDoc();
       if (!Utils.isEmptyOrNull(doc))
-        print(" - " + param.getDoc());
+        print(" &mdash; " + param.getDoc());
       close("dd");
     }
   }
