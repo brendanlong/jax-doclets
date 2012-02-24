@@ -144,7 +144,7 @@ public class ResourceWriter extends DocletWriter {
     String name = resource.getName();
     if (Utils.isEmptyOrNull(name))
       name = Utils.unStartSlashify(Utils.unEndSlashify(jaxrscontext));
-    StringBuffer buf = new StringBuffer(name);
+    StringBuilder buf = new StringBuilder(name);
     Resource _resource = this.resource;
     String rel = "";
     while ((_resource = _resource.getParent()) != null) {
@@ -173,14 +173,10 @@ public class ResourceWriter extends DocletWriter {
     else
       print(buf.toString());
     close("h2");
-    Doc javaDoc = this.resource.getJavaDoc();
-    if (javaDoc != null && javaDoc.tags() != null) {
-      writer.printInlineComment(javaDoc);
-    }
     do {
       boolean needsPathHeading = true;
       List<ResourceMethod> lrm = this.resource.getMethods();
-      if (lrm.size() == 0) {
+      if (lrm.isEmpty()) {
         // not expected (resource with no methods)
         break;
       }
@@ -217,6 +213,7 @@ public class ResourceWriter extends DocletWriter {
       printHeader("Resource " + resource.getName());
   }
 
+  @Override
   protected void printThirdMenu() {
     open("tr");
     open("td class='NavBarCell3'");
