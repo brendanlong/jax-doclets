@@ -55,7 +55,6 @@ public class MethodWriter extends DocletWriter {
   }
 
   private void printMethod(String httpMethod) {
-    around("a name='" + httpMethod + "'", "");
     if(getJAXRSConfiguration().enableHTTPExample
         || getJAXRSConfiguration().enableJavaScriptExample){
       open("table class='examples'", "tr");
@@ -81,8 +80,7 @@ public class MethodWriter extends DocletWriter {
     printInput();
     printOutput();
     printParameters(method.getQueryParameters(), "Query");
-    // done on resource
-    // printParameters(method.getPathParameters(), "Path");
+    printParameters(method.getPathParameters(), "Path");
     printParameters(method.getMatrixParameters(), "Matrix");
     printParameters(method.getFormParameters(), "Form");
     printParameters(method.getCookieParameters(), "Cookie");

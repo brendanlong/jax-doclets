@@ -180,28 +180,6 @@ public class ResourceWriter extends DocletWriter {
         // not expected (resource with no methods)
         break;
       }
-      // All methods on same resource, so path should be same
-      ResourceMethod rm = lrm.get(0);
-      for (MethodParameter param : rm.getPathParameters()) {
-        if (needsPathHeading) {
-          open("dl");
-          open("dt");
-          around("b", "Path parameters:");
-          close("dt");
-          needsPathHeading = false;
-        }
-        open("dd");
-        around("b", param.getName());
-        String regex = rm.getPathParamRegex(param.getName());
-        if (regex != null) {
-          around("tt", " (" + regex + ")");
-        }
-        print(" - " + param.getDoc());
-        close("dd");
-      }
-      if (!needsPathHeading) {
-        close("dl");
-      }
     } while (false);
 
   }
