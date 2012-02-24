@@ -20,15 +20,12 @@ package com.lunatech.doclets.jax.jaxrs.writers;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import com.lunatech.doclets.jax.JAXConfiguration;
 import com.lunatech.doclets.jax.Utils;
 import com.lunatech.doclets.jax.jaxrs.JAXRSDoclet;
-import com.lunatech.doclets.jax.jaxrs.model.MethodParameter;
 import com.lunatech.doclets.jax.jaxrs.model.Resource;
 import com.lunatech.doclets.jax.jaxrs.model.ResourceMethod;
-import com.sun.javadoc.Doc;
 import com.sun.tools.doclets.formats.html.HtmlDocletWriter;
 
 public class ResourceWriter extends DocletWriter {
@@ -51,11 +48,7 @@ public class ResourceWriter extends DocletWriter {
     String selected = isRoot ? "Root resource" : "";
     printHeader(isRoot);
     printMenu(selected);
-    printResourceInfo();
-    printSubresources();
     printMethods();
-    tag("hr");
-    printMenu(selected);
     printFooter();
     writer.flush();
   }
@@ -69,119 +62,12 @@ public class ResourceWriter extends DocletWriter {
 
   private void printMethodDetails(List<ResourceMethod> methods) {
     tag("hr");
-    open("table class='info' id='methods-details'");
-    around("caption class='TableCaption'", "Method Detail");
-    open("tbody");
     for (ResourceMethod method : methods) {
       // skip resource locator methods
       if (method.isResourceLocator())
         continue;
-      open("tr");
-      open("td");
       new MethodWriter(method, this, doclet).print();
-      close("td");
-      close("tr");
     }
-    close("tbody");
-    close("table");
-  }
-
-  private void printSubresources() {
-    Map<String, Resource> resources = resource.getResources();
-    if (resources.isEmpty())
-      return;
-    tag("hr");
-    open("table class='info' id='resources'");
-    around("caption class='TableCaption'", "Resources");
-    open("tbody");
-    open("tr");
-    around("th class='TableHeader'", "Name");
-    around("th class='TableHeader'", "Description");
-    close("tr");
-    for (String subResourceKey : resources.keySet()) {
-      Resource realSubResource = resources.get(subResourceKey);
-      Resource subResource = deepFilter(realSubResource);
-      open("tr");
-      open("td");
-      String path = subResource.getPathFrom(resource);
-      if (subResource != realSubResource) {
-        String realPath = realSubResource.getName();
-        around("a href='" + realPath + "/index.html'", realPath);
-        tag("br");
-        print(" ↳ ");
-        open("span class='deep-resource'");
-        around("a href='" + path + "/index.html'", path);
-        close("span");
-
-      } else
-        around("a href='" + path + "/index.html'", path);
-      close("td");
-      open("td");
-      Doc javaDoc = subResource.getJavaDoc();
-      if (javaDoc != null && javaDoc.firstSentenceTags() != null)
-        writer.printSummaryComment(javaDoc);
-      close("td");
-      close("tr");
-    }
-    close("tbody");
-    close("table");
-  }
-
-  private Resource deepFilter(Resource resource) {
-    if (resource.hasRealMethods())
-      return resource;
-    if (resource.getResources().size() > 1)
-      return resource;
-    // there cannot be any resource with no method, and no subresources
-    // return the first subresource
-    return deepFilter(resource.getResources().values().iterator().next());
-  }
-
-  private void printResourceInfo() {
-    open("h2");
-    print("Path: ");
-    String jaxrscontext = getJAXRSConfiguration().jaxrscontext;
-    String name = resource.getName();
-    if (Utils.isEmptyOrNull(name))
-      name = Utils.unStartSlashify(Utils.unEndSlashify(jaxrscontext));
-    StringBuilder buf = new StringBuilder(name);
-    Resource _resource = this.resource;
-    String rel = "";
-    while ((_resource = _resource.getParent()) != null) {
-      rel = "../" + rel;
-      String resourceName = _resource.getName();
-      if (Utils.isEmptyOrNull(resourceName)) {
-        if (!Utils.isEmptyOrNull(jaxrscontext)) {
-          resourceName = Utils.unStartSlashify(Utils.unEndSlashify(jaxrscontext));
-        } else {
-          // start with slash
-          resourceName = "/";
-        }
-      }
-      String href = "<a href='" + rel + "index.html'>" + resourceName;
-      if (resourceName.equals("/"))
-        href += "</a> ";
-      else
-        href += "</a> / ";
-      buf.insert(0, href);
-    }
-
-    if (!Utils.isEmptyOrNull(jaxrscontext))
-      print("/ ");
-    if (buf.length() == 0)
-      print("/");
-    else
-      print(buf.toString());
-    close("h2");
-    do {
-      boolean needsPathHeading = true;
-      List<ResourceMethod> lrm = this.resource.getMethods();
-      if (lrm.isEmpty()) {
-        // not expected (resource with no methods)
-        break;
-      }
-    } while (false);
-
   }
 
   private void printHeader(boolean isRoot) {
@@ -189,20 +75,5 @@ public class ResourceWriter extends DocletWriter {
       printHeader("Root Resource");
     else
       printHeader("Resource " + resource.getName());
-  }
-
-  @Override
-  protected void printThirdMenu() {
-    open("tr");
-    open("td class='NavBarCell3'");
-    print("summary: ");
-    printLink(!resource.getResources().isEmpty(), "#resources", "resource");
-    print(" | ");
-    printLink(resource.hasRealMethods(), "#methods-summary", "method");
-    close("td");
-    open("td class='NavBarCell3'");
-    print("detail: ");
-    printLink(resource.hasRealMethods(), "#methods-details", "method");
-    close("td", "tr");
   }
 }

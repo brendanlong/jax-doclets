@@ -55,6 +55,7 @@ public class MethodWriter extends DocletWriter {
   }
 
   private void printMethod(String httpMethod) {
+    around("h2", httpMethod + " " + method.getPath());
     if(getJAXRSConfiguration().enableHTTPExample
         || getJAXRSConfiguration().enableJavaScriptExample){
       open("table class='examples'", "tr");
