@@ -34,8 +34,6 @@ import javax.ws.rs.PUT;
 
 import com.lunatech.doclets.jax.JAXConfiguration;
 import com.lunatech.doclets.jax.Utils;
-import com.lunatech.doclets.jax.jaxrs.JAXRSDoclet;
-import com.lunatech.doclets.jax.jaxrs.writers.ResourceWriter;
 import com.sun.javadoc.Doc;
 
 public class Resource {
@@ -159,16 +157,6 @@ public class Resource {
 
   public String getName() {
     return fragmentWithNoRegex;
-  }
-
-  public void write(JAXRSDoclet doclet, JAXConfiguration configuration) {
-    if(this.hasRealMethods()) {
-      ResourceWriter writer = new ResourceWriter(configuration, this, doclet);
-      writer.write();
-    }
-    for (Resource subResource : subResources.values()) {
-      subResource.write(doclet, configuration);
-    }
   }
 
   public Map<String, Resource> getResources() {

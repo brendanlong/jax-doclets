@@ -18,6 +18,7 @@
  */
 package com.lunatech.doclets.jax.jaxrs.writers;
 
+import com.lunatech.doclets.jax.JAXConfiguration;
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;
@@ -37,21 +38,37 @@ import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.ParameterizedType;
 import com.sun.javadoc.Tag;
 import com.sun.javadoc.Type;
+import com.sun.tools.doclets.formats.html.HtmlDocletWriter;
 import com.sun.tools.doclets.formats.html.TagletOutputImpl;
+import java.io.IOException;
 
 public class MethodWriter extends DocletWriter {
 
   private ResourceMethod method;
 
-  public MethodWriter(ResourceMethod method, ResourceWriter resourceWriter, JAXRSDoclet doclet) {
-    super(resourceWriter.getConfiguration(), resourceWriter.getWriter(), resourceWriter.getResource(), doclet);
+  public MethodWriter(JAXConfiguration configuration, ResourceMethod method, JAXRSDoclet doclet) {
+    super(configuration, getWriter(configuration, method), doclet);
     this.method = method;
   }
 
+  private static HtmlDocletWriter getWriter(JAXConfiguration configuration, ResourceMethod method) {
+    String pathName = Utils.urlToSystemPath(method);
+    try {
+      return new HtmlDocletWriter(configuration.parentConfiguration, pathName, "index.html", Utils.urlToRoot(method));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   public void print() {
+    printHeader(method.getPath());
+    printMenu(null);
+    tag("hr");
     for (String httpMethod : method.getMethods()) {
       printMethod(httpMethod);
     }
+    printFooter();
+    writer.close();
   }
 
   private void printMethod(String httpMethod) {
@@ -361,7 +378,6 @@ public class MethodWriter extends DocletWriter {
       tag("br");
       print("&nbsp;&nbsp;");
     }
-    hasOne = true;
     print("'" + name + "': ");
     Tag[] tags = param.getFirstSentenceTags();
     if (tags != null && tags.length > 0) {
@@ -377,7 +393,7 @@ public class MethodWriter extends DocletWriter {
   private void printHTTPExample(String httpMethod) {
     around("b", "HTTP Example:");
     open("pre");
-    String absPath = Utils.getAbsolutePath(this, resource);
+    String absPath = method.getPath();
 
     print(httpMethod + " " + absPath);
     List<MethodParameter> matrixParameters = method.getMatrixParameters();

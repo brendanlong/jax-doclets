@@ -19,6 +19,7 @@
 package com.lunatech.doclets.jax.jaxrs.writers;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
 
 import com.lunatech.doclets.jax.JAXConfiguration;
@@ -30,11 +31,11 @@ import com.sun.tools.doclets.formats.html.HtmlDocletWriter;
 
 public class SummaryWriter extends com.lunatech.doclets.jax.writers.DocletWriter {
 
-  private Resource resource;
+  private Collection<ResourceMethod> methods;
 
-  public SummaryWriter(JAXConfiguration configuration, Resource resource) {
+  public SummaryWriter(JAXConfiguration configuration, Collection<ResourceMethod> methods) {
     super(configuration, getWriter(configuration));
-    this.resource = resource;
+    this.methods = methods;
   }
 
   private static HtmlDocletWriter getWriter(JAXConfiguration configuration) {
@@ -48,14 +49,13 @@ public class SummaryWriter extends com.lunatech.doclets.jax.writers.DocletWriter
   public void write() {
     printHeader();
     printMenu("Overview");
+    tag("hr");
     printResources();
     printFooter();
-    writer.flush();
     writer.close();
   }
 
   private void printResources() {
-    tag("hr");
     open("table class='info'");
     around("caption class='TableCaption'", "Resources");
     open("tbody");
@@ -64,38 +64,30 @@ public class SummaryWriter extends com.lunatech.doclets.jax.writers.DocletWriter
     around("th class='TableHeader'", "Resource");
     around("th class='TableHeader'", "Description");
     close("tr");
-    printResource(resource);
+    for(ResourceMethod method : methods ) {
+        printMethodLine(method);
+    }
     close("tbody");
     close("table");
   }
 
-  private void printResource(Resource resource) {
-    if (resource.hasRealMethods())
-      printResourceLine(resource);
-    // now recurse
-    Map<String, Resource> subResources = resource.getResources();
-    for (String name : subResources.keySet()) {
-      Resource subResource = subResources.get(name);
-      printResource(subResource);
-    }
-  }
-
-  private void printResourceLine(Resource resource) {
+  private void printMethodLine(ResourceMethod method) {
     open("tr");
-    String path = Utils.urlToPath(resource);
+    String path = Utils.getAbsolutePath(this, method);
+    if(path.endsWith("/")) {
+      path = path.substring(path.length() - 1);
+    }
 
     // Print method(s)
     open("td");
     boolean first = true;
-    for (ResourceMethod method : resource.getMethods()) {
-      for (String httpMethod : method.getMethods()) {
-        if (!first)
-          print(", ");
-        open("a href='" + path + "/index.html#" + httpMethod + "'");
-        around("tt", httpMethod);
-        close("a");
-        first = false;
-      }
+    for (String httpMethod : method.getMethods()) {
+      if (!first)
+        print(", ");
+      open("a href='" + path + "/index.html#" + httpMethod + "'");
+      around("tt", httpMethod);
+      close("a");
+      first = false;
     }
     close("td");
 
@@ -104,13 +96,13 @@ public class SummaryWriter extends com.lunatech.doclets.jax.writers.DocletWriter
     if (path.length() == 0)
       path = ".";
     open("a href='" + path + "/index.html'");
-    around("tt", Utils.getAbsolutePath(this, resource));
+    around("tt", method.getPath());
     close("a");
     close("td");
 
     // Print description
     open("td");
-    Doc javaDoc = resource.getJavaDoc();
+    Doc javaDoc = method.getJavaDoc();
     if (javaDoc != null && javaDoc.firstSentenceTags() != null)
       writer.printSummaryComment(javaDoc);
     close("td");

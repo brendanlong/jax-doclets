@@ -336,15 +336,15 @@ public class Utils {
     return DirectoryManager.getPath(jpaClass.getPackageName());
   }
 
-  public static String urlToPath(Resource resource) {
-    String name = resource.getAbsolutePath();
+  public static String urlToPath(ResourceMethod method) {
+    String name = method.getPath();
     if (name.startsWith("/"))
       name = name.substring(1);
     return name;
   }
 
-  public static String urlToSystemPath(Resource resource) {
-    String name = resource.getAbsolutePath();
+  public static String urlToSystemPath(ResourceMethod resource) {
+    String name = resource.getPath();
     if (name.startsWith("/"))
       name = name.substring(1);
     return name.replace('/', File.separatorChar);
@@ -370,8 +370,8 @@ public class Utils {
     return DirectoryManager.getRelativePath(klass.getPackageName());
   }
 
-  public static String urlToRoot(Resource resource) {
-    String from = resource.getAbsolutePath();
+  public static String urlToRoot(ResourceMethod resource) {
+    String from = resource.getPath();
     if (from.startsWith("/"))
       from = from.substring(1);
     return urlToRoot(from);
@@ -831,8 +831,12 @@ public class Utils {
     return addContextPath(writer, method.getURL(resource));
   }
 
-  public static String getAbsolutePath(DocletWriter writer, Resource resource) {
-    return addContextPath(writer, resource.getAbsolutePath());
+  public static String getAbsolutePath(DocletWriter writer, ResourceMethod method) {
+    String path = addContextPath(writer, method.getPath());
+    if(path.endsWith("/")) {
+      path = path.substring(0, path.length() - 1);
+    }
+    return writer.getConfiguration().parentConfiguration.destDirName + path;
   }
 
   public static void log(String mesg) {

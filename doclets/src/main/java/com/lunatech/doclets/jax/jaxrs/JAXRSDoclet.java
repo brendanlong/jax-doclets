@@ -26,10 +26,10 @@ import javax.ws.rs.Path;
 
 import com.lunatech.doclets.jax.JAXDoclet;
 import com.lunatech.doclets.jax.Utils;
-import com.lunatech.doclets.jax.jaxrs.model.Resource;
 import com.lunatech.doclets.jax.jaxrs.model.ResourceClass;
 import com.lunatech.doclets.jax.jaxrs.model.ResourceMethod;
 import com.lunatech.doclets.jax.jaxrs.tags.*;
+import com.lunatech.doclets.jax.jaxrs.writers.MethodWriter;
 import com.lunatech.doclets.jax.jaxrs.writers.SummaryWriter;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.DocErrorReporter;
@@ -96,9 +96,10 @@ public class JAXRSDoclet extends JAXDoclet<JAXRSConfiguration> {
         handleJAXRSClass(klass);
       }
     }
-    Resource rootResource = Resource.getRootResource(jaxrsMethods);
-    rootResource.write(this, conf);
-    new SummaryWriter(conf, rootResource).write();
+    for(ResourceMethod method : jaxrsMethods) {
+        new MethodWriter(conf, method, this).print();
+    }
+    new SummaryWriter(conf, jaxrsMethods).write();
     Utils.copyResources(conf);
   }
 
