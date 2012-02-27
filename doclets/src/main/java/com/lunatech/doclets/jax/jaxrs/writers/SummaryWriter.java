@@ -20,11 +20,9 @@ package com.lunatech.doclets.jax.jaxrs.writers;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Map;
 
 import com.lunatech.doclets.jax.JAXConfiguration;
 import com.lunatech.doclets.jax.Utils;
-import com.lunatech.doclets.jax.jaxrs.model.Resource;
 import com.lunatech.doclets.jax.jaxrs.model.ResourceMethod;
 import com.sun.javadoc.Doc;
 import com.sun.tools.doclets.formats.html.HtmlDocletWriter;
