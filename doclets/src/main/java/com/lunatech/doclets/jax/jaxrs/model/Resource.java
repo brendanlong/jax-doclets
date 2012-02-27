@@ -146,8 +146,7 @@ public class Resource {
     for (ResourceMethod method : methods) {
       dump(offset + 1, "+ [M]" + method.toString());
     }
-    for (String subResourceKey : subResources.keySet()) {
-      Resource subResource = subResources.get(subResourceKey);
+    for (Resource subResource : subResources.values()) {
       subResource.dump(offset + 1);
     }
   }
@@ -167,8 +166,7 @@ public class Resource {
       ResourceWriter writer = new ResourceWriter(configuration, this, doclet);
       writer.write();
     }
-    for (String subResourceKey : subResources.keySet()) {
-      Resource subResource = subResources.get(subResourceKey);
+    for (Resource subResource : subResources.values()) {
       subResource.write(doclet, configuration);
     }
   }
