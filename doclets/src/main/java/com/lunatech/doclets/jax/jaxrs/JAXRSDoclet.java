@@ -19,8 +19,8 @@
 package com.lunatech.doclets.jax.jaxrs;
 
 import java.util.Collections;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.List;
+import java.util.ArrayList;
 
 import javax.ws.rs.Path;
 
@@ -66,7 +66,7 @@ public class JAXRSDoclet extends JAXDoclet<JAXRSConfiguration> {
     return AbstractDoclet.languageVersion();
   }
 
-  private Set<ResourceMethod> jaxrsMethods = new TreeSet<ResourceMethod>();
+  private List<ResourceMethod> jaxrsMethods = new ArrayList<ResourceMethod>();
 
   public static boolean start(final RootDoc rootDoc) {
     new JAXRSDoclet(rootDoc).start();
@@ -99,6 +99,7 @@ public class JAXRSDoclet extends JAXDoclet<JAXRSConfiguration> {
     for(ResourceMethod method : jaxrsMethods) {
         new MethodWriter(conf, method, this).print();
     }
+    Collections.sort(jaxrsMethods);
     new SummaryWriter(conf, jaxrsMethods).write();
     Utils.copyResources(conf);
   }

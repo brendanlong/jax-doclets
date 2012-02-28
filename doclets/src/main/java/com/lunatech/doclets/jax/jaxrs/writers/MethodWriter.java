@@ -64,21 +64,23 @@ public class MethodWriter extends DocletWriter {
     printHeader(method.getPath());
     printMenu(null);
     tag("hr");
-    for (String httpMethod : method.getMethods()) {
-      printMethod(httpMethod);
-    }
+    printMethod();
     printFooter();
     writer.close();
   }
 
-  private void printMethod(String httpMethod) {
-    around("h2", httpMethod + " " + method.getPath());
+  private void printMethod() {
+    for(String httpMethod : method.getMethods()) {
+      around("h2", httpMethod + " " + method.getPath());
+    }
     if(getJAXRSConfiguration().enableHTTPExample
         || getJAXRSConfiguration().enableJavaScriptExample){
       open("table class='examples'", "tr");
       if(getJAXRSConfiguration().enableHTTPExample){
         open("td");
-        printHTTPExample(httpMethod);
+        for(String httpMethod : method.getMethods()) {
+          printHTTPExample(httpMethod);
+        }
         close("td");
       }
       if(getJAXRSConfiguration().enableJavaScriptExample){
