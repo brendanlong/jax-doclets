@@ -54,7 +54,7 @@ public class MethodWriter extends DocletWriter {
   private static HtmlDocletWriter getWriter(JAXConfiguration configuration, ResourceMethod method) {
     String pathName = Utils.urlToSystemPath(method);
     try {
-      return new HtmlDocletWriter(configuration.parentConfiguration, pathName, "index.html", Utils.urlToRoot(method));
+      return new HtmlDocletWriter(configuration.parentConfiguration, pathName, Utils.join(method.getMethods()) + ".html", Utils.urlToRoot(method));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

@@ -51,6 +51,7 @@ import com.sun.tools.doclets.internal.toolkit.taglets.TagletManager;
 import com.sun.tools.doclets.internal.toolkit.taglets.TagletOutput;
 import com.sun.tools.doclets.internal.toolkit.taglets.TagletWriter;
 import com.sun.tools.doclets.internal.toolkit.util.DirectoryManager;
+import java.awt.ItemSelectable;
 
 public class Utils {
 
@@ -772,6 +773,22 @@ public class Utils {
     // add all that remains
     strbuf.append(fragment.substring(start, fragmentArray.length));
     return strbuf.toString();
+  }
+
+  public static String join(Collection<String> items, String seperator) {
+    StringBuilder str = new StringBuilder();
+    for(String item : items) {
+      str.append(item);
+      str.append(seperator);
+    }
+    if(str.length() > 0) {
+      str.setLength(str.length() - seperator.length());
+    }
+    return str.toString();
+  }
+
+  public static String join(Collection<String> items) {
+    return join(items, ",");
   }
 
   @SuppressWarnings("serial")

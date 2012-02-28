@@ -76,13 +76,15 @@ public class SummaryWriter extends com.lunatech.doclets.jax.writers.DocletWriter
       path = path.substring(path.length() - 1);
     }
 
+    String methodsStr = Utils.join(method.getMethods());
+
     // Print method(s)
     open("td");
     boolean first = true;
     for (String httpMethod : method.getMethods()) {
       if (!first)
         print(", ");
-      open("a href='" + path + "/index.html#" + httpMethod + "'");
+      open("a href='" + path + "/" + methodsStr + ".html'");
       around("tt", httpMethod);
       close("a");
       first = false;
@@ -93,7 +95,7 @@ public class SummaryWriter extends com.lunatech.doclets.jax.writers.DocletWriter
     open("td");
     if (path.length() == 0)
       path = ".";
-    open("a href='" + path + "/index.html'");
+    open("a href='" + path + "/" + methodsStr + ".html'");
     around("tt", method.getPath());
     close("a");
     close("td");
