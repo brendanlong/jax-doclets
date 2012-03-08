@@ -128,7 +128,7 @@ public class DocletWriter {
 
   protected void printTopMenu(String selected) {
     open("table", "tbody", "tr");
-    printMenuItem("Overview", writer.relativePath + "overview-summary.html", selected);
+    printMenuItem("Overview", writer.relativePath + "index.html", selected);
     printOtherMenuItems(selected);
     close("tr", "tbody", "table");
   }
