@@ -25,7 +25,9 @@ import com.lunatech.doclets.jax.JAXConfiguration;
 import com.lunatech.doclets.jax.Utils;
 import com.lunatech.doclets.jax.jaxrs.model.ResourceMethod;
 import com.sun.javadoc.Doc;
+import com.sun.javadoc.RootDoc;
 import com.sun.tools.doclets.formats.html.HtmlDocletWriter;
+import java.io.InputStream;
 
 public class SummaryWriter extends com.lunatech.doclets.jax.writers.DocletWriter {
 
@@ -47,10 +49,17 @@ public class SummaryWriter extends com.lunatech.doclets.jax.writers.DocletWriter
   public void write() {
     printHeader();
     printMenu("Overview");
-    tag("hr");
+    printOverview();
     printResources();
     printFooter();
     writer.close();
+  }
+
+  private void printOverview() {
+    RootDoc root = configuration.parentConfiguration.root;
+    if (root.inlineTags().length > 0) {
+      around("div", root.getRawCommentText());
+    }
   }
 
   private void printResources() {
