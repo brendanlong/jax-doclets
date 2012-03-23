@@ -63,8 +63,8 @@ public class SummaryWriter extends com.lunatech.doclets.jax.writers.DocletWriter
   }
 
   private void printResources() {
+    around("h2", "Resources");
     open("table class='info'");
-    around("caption class='TableCaption'", "Resources");
     open("tbody");
     open("tr class='subheader'");
     around("th class='TableHeader'", "Methods");
